@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import "../App.css";
 import logo from "../assets/logo2.png";
 
@@ -7,11 +8,12 @@ function Header() {
   const [showLogin, setShowLogin] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
 
-  // Dummy backend database (replace with real API later)
   const [registeredUsers, setRegisteredUsers] = useState([]);
-  const [otp, setOtp] = useState(""); // Generated OTP
-  const [enteredOtp, setEnteredOtp] = useState(""); // User input OTP
+  const [otp, setOtp] = useState("");
+  const [enteredOtp, setEnteredOtp] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
+
+  const navigate = useNavigate(); // for redirecting user
 
   // Signup handler
   const handleSignup = (e) => {
@@ -19,7 +21,6 @@ function Header() {
     const formData = new FormData(e.target);
     const userData = Object.fromEntries(formData.entries());
 
-    // Check if email already registered
     const emailExists = registeredUsers.some((u) => u.email === userData.email);
     if (emailExists) {
       alert("❌ Email already registered! Please log in.");
@@ -27,35 +28,32 @@ function Header() {
     }
 
     setRegisteredUsers((prev) => [...prev, userData]);
-    console.log("User Registered:", userData);
-
     alert("Registration Successful ✅");
     setShowSignup(false);
     e.target.reset();
   };
 
-  // Login handler (Step 1: Email Check)
+  // Login handler
   const handleLogin = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
 
     const user = registeredUsers.find((u) => u.email === email);
     if (user) {
-      // Generate OTP
-      const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit
+      const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
       setOtp(generatedOtp);
       setCurrentUser(user);
       setShowLogin(false);
       setShowOtp(true);
 
-      console.log("Generated OTP:", generatedOtp); // for testing
+      console.log("Generated OTP:", generatedOtp);
       alert(`✅ OTP sent to ${email} (Demo: ${generatedOtp})`);
     } else {
       alert("❌ Email not registered! Please sign up first.");
     }
   };
 
-  // OTP Verification
+  // OTP verification
   const handleOtpVerify = (e) => {
     e.preventDefault();
 
@@ -64,6 +62,9 @@ function Header() {
       setShowOtp(false);
       setEnteredOtp("");
       setOtp("");
+
+      // redirect to dashboard
+      navigate("/dashboard");
     } else {
       alert("❌ Invalid OTP. Please try again.");
     }
@@ -71,7 +72,7 @@ function Header() {
 
   return (
     <>
-      {/* Header Navbar */}
+      {/* Navbar */}
       <div className="shadow fixed top-0 w-full bg-white z-50">
         <nav className="center py-3 flex items-center justify-between px-6">
           <div>
@@ -128,7 +129,7 @@ function Header() {
         </div>
       )}
 
-      {/* Login Modal (Email Check) */}
+      {/* Login Modal */}
       {showLogin && (
         <div className="fixed inset-0 bg-[#c7c7c77e] flex justify-center items-center z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-[400px] relative">
