@@ -8,72 +8,71 @@ function Header() {
   const [showLogin, setShowLogin] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
 
-  const [registeredUsers, setRegisteredUsers] = useState([]);
   const [otp, setOtp] = useState("");
   const [enteredOtp, setEnteredOtp] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
+  const [userType, setUserType] = useState("user"); // default user type
 
   const navigate = useNavigate(); 
 
-
+  // Signup remains mostly same
   const handleSignup = async (e) => {
-  e.preventDefault();
-  const formData = new FormData(e.target);
-  const userData = Object.fromEntries(formData.entries());
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const userData = Object.fromEntries(formData.entries());
+    userData.userType = formData.get("userType"); // add userType to registration
 
-  try {
-    const response = await fetch("http://localhost:8000/user", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userData)
-    });
+    try {
+      const response = await fetch("http://localhost:8000/user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData)
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      alert("Registration Successful ✅");
-      setShowSignup(false);
-      e.target.reset();
-    } else {
-      alert(`❌ Error: ${data.error}`);
+      if (response.ok) {
+        alert("Registration Successful ✅");
+        setShowSignup(false);
+        e.target.reset();
+      } else {
+        alert(`❌ Error: ${data.error}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("❌ Something went wrong. Try again.");
     }
-  } catch (err) {
-    console.error(err);
-    alert("❌ Something went wrong. Try again.");
-  }
-};
+  };
 
-
- 
+  // Login updated with user type
   const handleLogin = async (e) => {
-  e.preventDefault();
-  const email = e.target.email.value;
+    e.preventDefault();
+    const email = e.target.email.value;
+    const selectedType = e.target.userType.value;
 
-  try {
-    const res = await fetch("http://localhost:8000/user");
-    const users = await res.json();
+    try {
+      const res = await fetch("http://localhost:8000/user");
+      const users = await res.json();
 
-    const user = users.find((u) => u.email === email);
+      const user = users.find((u) => u.email === email && u.userType === selectedType);
 
-    if (user) {
-      const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-      setOtp(generatedOtp);
-      setCurrentUser(user);
-      setShowLogin(false);
-      setShowOtp(true);
+      if (user) {
+        const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+        setOtp(generatedOtp);
+        setCurrentUser(user);
+        setShowLogin(false);
+        setShowOtp(true);
 
-      console.log("Generated OTP:", generatedOtp);
-      alert(`✅ OTP sent to ${email} (Demo: ${generatedOtp})`);
-    } else {
-      alert("❌ Email not registered! Please sign up first.");
+        console.log("Generated OTP:", generatedOtp);
+        alert(`✅ OTP sent to ${email} (Demo: ${generatedOtp})`);
+      } else {
+        alert(`❌ ${selectedType} not found with this email!`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("❌ Unable to fetch users. Try again.");
     }
-  } catch (err) {
-    console.error(err);
-    alert("❌ Unable to fetch users. Try again.");
-  }
-};
-
-
+  };
 
   const handleOtpVerify = (e) => {
     e.preventDefault();
@@ -84,8 +83,10 @@ function Header() {
       setEnteredOtp("");
       setOtp("");
 
-     
-      navigate("/dashboard");
+      // Redirect based on user type
+      if (currentUser.userType === "doctor") navigate("/doctor-dashboard");
+      else if (currentUser.userType === "pharmacist") navigate("/pharmacy-dashboard");
+      else navigate("/dashboard");
     } else {
       alert("❌ Invalid OTP. Please try again.");
     }
@@ -123,7 +124,7 @@ function Header() {
         </nav>
       </div>
 
-     
+      {/* Signup Modal */}
       {showSignup && (
         <div className="fixed inset-0 bg-[#c7c7c77e] flex justify-center items-center z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-[500px] relative">
@@ -141,6 +142,12 @@ function Header() {
                 <option>Other</option>
               </select>
               <input type="date" name="dob" required className="w-full p-2 border rounded-md"/>
+              <select name="userType" required className="w-full p-2 border rounded-md">
+                <option value="">Select User Type</option>
+                <option value="user">User</option>
+                <option value="doctor">Doctor</option>
+                <option value="pharmacist">Pharmacist</option>
+              </select>
               <button type="submit" className="w-full py-2 bg-[#0f80a5] text-white rounded-md hover:opacity-90 transition">
                 Register
               </button>
@@ -150,7 +157,7 @@ function Header() {
         </div>
       )}
 
-      
+      {/* Login Modal */}
       {showLogin && (
         <div className="fixed inset-0 bg-[#c7c7c77e] flex justify-center items-center z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-[400px] relative">
@@ -159,6 +166,12 @@ function Header() {
             </h2>
             <form onSubmit={handleLogin} className="space-y-4">
               <input type="email" name="email" placeholder="Enter your Email" required className="w-full p-2 border rounded-md"/>
+              <select name="userType" required className="w-full p-2 border rounded-md">
+                <option value="">Select User Type</option>
+                <option value="user">User</option>
+                <option value="doctor">Doctor</option>
+                <option value="pharmacist">Pharmacist</option>
+              </select>
               <button type="submit" className="w-full py-2 bg-[#0f80a5] text-white rounded-md hover:opacity-90 transition">
                 Next
               </button>

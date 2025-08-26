@@ -9,6 +9,8 @@ import Footer from "./Components/Footer.jsx";
 import Dashboard from "./Components/Dashboard.jsx";
 import UserDashboard from "./Components/Dashboards/UserDashboard.jsx"; 
 import DoctorDashboard from "./Components/Dashboards/DoctorDashBoard.jsx";
+import Chatbot from "./Components/Chatbot.jsx";
+import PharmaDashBoard from "./Components/Dashboards/PharmaDashBoard.jsx";
 
 function App() {
   return (
@@ -21,9 +23,11 @@ function App() {
             <div>
               <Header />
               <Hero />
+              <Chatbot/>
               <Info />
               <RolesSection />
               <Footer />
+              
             </div>
           }
         />
@@ -32,6 +36,8 @@ function App() {
         <Route path="/dashboard" element={<UserDashboard/>} />
        
         <Route path="/doctorDashBoard" element={<DoctorDashboard/>} />
+
+        <Route path="/PharmaDashboard" element={<PharmaDashBoard/>} />
       </Routes>
     </Router>
   );
