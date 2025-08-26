@@ -1,19 +1,23 @@
-const mongoose=require('mongoose');
-//Define the mongodb connection url
-const mongoUrl='mongodb://localhost:27017/SIH'
-mongoose.connect(mongoUrl);
-//get the default connection
-//Mongoose maintains a default connection object representing the mongdb connection.
-const db=mongoose.connection;
-//define the event listeners for database connection
-db.on('connected',()=>{
-    console.log("connected to mongodb server");
+const mongoose = require("mongoose");
+require("dotenv").config();
+
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
-db.on('disconnected',()=>{
-    console.log("disconnected to mongodb server");
+
+const db = mongoose.connection;
+
+db.on("connected", () => {
+  console.log("✅ MongoDB connected");
 });
-db.on('error',()=>{
-    console.log("error in mongodb server");
+
+db.on("error", (err) => {
+  console.log("❌ MongoDB connection error:", err);
 });
-//export the database connection
-module.exports=db;
+
+db.on("disconnected", () => {
+  console.log("❌ MongoDB disconnected");
+});
+
+module.exports = db;

@@ -1,15 +1,19 @@
-    const express = require('express')
-    const app = express()
-    const db=require('./db');
-    const bodyParser=require('body-parser');
-    const appointment = require('./Models/Appointment');
-    app.use(bodyParser.json());
-    app.use(express.json());
-    const Userroute=require('./Routes/Userroute');
-    const appointmentroute=require('./Routes/appointmentroute');
-    app.use('/user',Userroute);
-    app.use('/appointment',appointmentroute);
-    require('dotenv').config();
-    app.listen(process.env.Port,()=>{
-        console.log("port is running");
-    });
+const express = require("express");
+const app = express();
+require("dotenv").config();
+const db = require("./db");
+
+const cors = require('cors');
+app.use(cors());
+// Middleware
+app.use(express.json());
+
+// Routes
+const Userroute = require("./Routes/Userroute");
+app.use("/user", Userroute);
+
+// Start server
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});

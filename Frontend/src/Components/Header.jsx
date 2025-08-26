@@ -16,29 +16,45 @@ function Header() {
   const navigate = useNavigate(); 
 
 
-  const handleSignup = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const userData = Object.fromEntries(formData.entries());
+  const handleSignup = async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const userData = Object.fromEntries(formData.entries());
 
-    const emailExists = registeredUsers.some((u) => u.email === userData.email);
-    if (emailExists) {
-      alert("❌ Email already registered! Please log in.");
-      return;
+  try {
+    const response = await fetch("http://localhost:8000/user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData)
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Registration Successful ✅");
+      setShowSignup(false);
+      e.target.reset();
+    } else {
+      alert(`❌ Error: ${data.error}`);
     }
+  } catch (err) {
+    console.error(err);
+    alert("❌ Something went wrong. Try again.");
+  }
+};
 
-    setRegisteredUsers((prev) => [...prev, userData]);
-    alert("Registration Successful ✅");
-    setShowSignup(false);
-    e.target.reset();
-  };
 
  
-  const handleLogin = (e) => {
-    e.preventDefault();
-    const email = e.target.email.value;
+  const handleLogin = async (e) => {
+  e.preventDefault();
+  const email = e.target.email.value;
 
-    const user = registeredUsers.find((u) => u.email === email);
+  try {
+    const res = await fetch("http://localhost:8000/user");
+    const users = await res.json();
+
+    const user = users.find((u) => u.email === email);
+
     if (user) {
       const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
       setOtp(generatedOtp);
@@ -51,7 +67,12 @@ function Header() {
     } else {
       alert("❌ Email not registered! Please sign up first.");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("❌ Unable to fetch users. Try again.");
+  }
+};
+
 
 
   const handleOtpVerify = (e) => {
