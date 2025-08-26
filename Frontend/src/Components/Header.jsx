@@ -3,14 +3,14 @@ import '../App.css'
 import logo from '../assets/logo2.png'
 function Header() {
   return (
-          <div className='shadow fixed top-0 w-full bg-white'>
+          <div className='shadow fixed top-0 w-full bg-white z-999'>
           <nav className='center py-3 flex items-center justify-between'>
               <div>
                   <img src={logo} alt="" className="w-auto  h-13" />
               </div>
     
       
-      <div className='flex gap-6 w-300px'>
+      <div className='flex gap-6 w-300px font-[400]'>
       <a href="#" className="hover:text-[#0f80a5]">Services</a>
       <a href="#" className="hover:text-[#0f80a5]">About</a>
        <a href="#" className="hover:text-[#0f80a5]">Contact</a>
