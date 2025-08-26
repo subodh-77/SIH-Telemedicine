@@ -1,0 +1,8 @@
+@import "tailwindcss";
+.center{
+    max-width: 1300px;
+    margin:0 auto;
+}
+.shadow{
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 1.95px 0px;
+}
