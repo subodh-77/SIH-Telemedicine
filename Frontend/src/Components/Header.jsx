@@ -13,9 +13,9 @@ function Header() {
   const [enteredOtp, setEnteredOtp] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
 
-  const navigate = useNavigate(); // for redirecting user
+  const navigate = useNavigate(); 
 
-  // Signup handler
+
   const handleSignup = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -33,7 +33,7 @@ function Header() {
     e.target.reset();
   };
 
-  // Login handler
+ 
   const handleLogin = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -53,7 +53,7 @@ function Header() {
     }
   };
 
-  // OTP verification
+
   const handleOtpVerify = (e) => {
     e.preventDefault();
 
@@ -63,7 +63,7 @@ function Header() {
       setEnteredOtp("");
       setOtp("");
 
-      // redirect to dashboard
+     
       navigate("/dashboard");
     } else {
       alert("❌ Invalid OTP. Please try again.");
@@ -102,7 +102,7 @@ function Header() {
         </nav>
       </div>
 
-      {/* Signup Modal */}
+     
       {showSignup && (
         <div className="fixed inset-0 bg-[#c7c7c77e] flex justify-center items-center z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-[500px] relative">
@@ -129,7 +129,7 @@ function Header() {
         </div>
       )}
 
-      {/* Login Modal */}
+      
       {showLogin && (
         <div className="fixed inset-0 bg-[#c7c7c77e] flex justify-center items-center z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 w-[400px] relative">

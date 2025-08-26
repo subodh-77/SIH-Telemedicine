@@ -6,13 +6,15 @@ import Hero from "./Components/Hero.jsx";
 import Info from "./Components/Info.jsx";
 import RolesSection from "./Components/RolesSection.jsx";
 import Footer from "./Components/Footer.jsx";
-import Dashboard from "./Components/Dashboard.jsx"; // 👈 create this page
+import Dashboard from "./Components/Dashboard.jsx";
+import UserDashboard from "./Components/Dashboards/UserDashboard.jsx"; 
+import DoctorDashboard from "./Components/Dashboards/DoctorDashBoard.jsx";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Home Page (with all your sections) */}
+        
         <Route
           path="/"
           element={
@@ -27,7 +29,9 @@ function App() {
         />
 
         {/* Dashboard Page */}
-        <Route path="./Components/Dashboard.jsx" element={<Dashboard />} />
+        <Route path="/dashboard" element={<UserDashboard/>} />
+       
+        <Route path="/doctorDashBoard" element={<DoctorDashboard/>} />
       </Routes>
     </Router>
   );
