@@ -11,16 +11,15 @@ function Header() {
   const [otp, setOtp] = useState("");
   const [enteredOtp, setEnteredOtp] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
-  const [userType, setUserType] = useState("user"); // default user type
 
   const navigate = useNavigate(); 
 
-  // Signup remains mostly same
+  // Signup without userType
   const handleSignup = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const userData = Object.fromEntries(formData.entries());
-    userData.userType = formData.get("userType"); // add userType to registration
+    userData.userType = "user"; // Default user type for signup
 
     try {
       const response = await fetch("http://localhost:8000/user", {
@@ -44,17 +43,16 @@ function Header() {
     }
   };
 
-  // Login updated with user type
+  // Login without userType
   const handleLogin = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
-    const selectedType = e.target.userType.value;
 
     try {
       const res = await fetch("http://localhost:8000/user");
       const users = await res.json();
 
-      const user = users.find((u) => u.email === email && u.userType === selectedType);
+      const user = users.find((u) => u.email === email && u.userType === "user");
 
       if (user) {
         const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -66,7 +64,7 @@ function Header() {
         console.log("Generated OTP:", generatedOtp);
         alert(`✅ OTP sent to ${email} (Demo: ${generatedOtp})`);
       } else {
-        alert(`❌ ${selectedType} not found with this email!`);
+        alert(`❌ User not found with this email!`);
       }
     } catch (err) {
       console.error(err);
@@ -84,9 +82,7 @@ function Header() {
       setOtp("");
 
       // Redirect based on user type
-      if (currentUser.userType === "doctor") navigate("/doctor-dashboard");
-      else if (currentUser.userType === "pharmacist") navigate("/pharmacy-dashboard");
-      else navigate("/dashboard");
+      navigate("/dashboard");
     } else {
       alert("❌ Invalid OTP. Please try again.");
     }
@@ -142,12 +138,6 @@ function Header() {
                 <option>Other</option>
               </select>
               <input type="date" name="dob" required className="w-full p-2 border rounded-md"/>
-              <select name="userType" required className="w-full p-2 border rounded-md">
-                <option value="">Select User Type</option>
-                <option value="user">User</option>
-                <option value="doctor">Doctor</option>
-                <option value="pharmacist">Pharmacist</option>
-              </select>
               <button type="submit" className="w-full py-2 bg-[#0f80a5] text-white rounded-md hover:opacity-90 transition">
                 Register
               </button>
@@ -166,12 +156,6 @@ function Header() {
             </h2>
             <form onSubmit={handleLogin} className="space-y-4">
               <input type="email" name="email" placeholder="Enter your Email" required className="w-full p-2 border rounded-md"/>
-              <select name="userType" required className="w-full p-2 border rounded-md">
-                <option value="">Select User Type</option>
-                <option value="user">User</option>
-                <option value="doctor">Doctor</option>
-                <option value="pharmacist">Pharmacist</option>
-              </select>
               <button type="submit" className="w-full py-2 bg-[#0f80a5] text-white rounded-md hover:opacity-90 transition">
                 Next
               </button>
